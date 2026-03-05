@@ -1,0 +1,26 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: vllm-agg-decode-scaler
+spec:
+  scaleTargetRef:
+    apiVersion: nvidia.com/v1alpha1
+    kind: DynamoGraphDeploymentScalingAdapter
+    name: vllm-agg-vllmdecodeworker
+  minReplicaCount: 2
+  maxReplicaCount: 4
+  pollingInterval: 30      # Check metrics every 30 seconds
+  cooldownPeriod: 120       # Wait 180s before scaling down
+  triggers:
+  - type: prometheus
+    metadata:
+      # Update this URL to match your Prometheus service
+      serverAddress: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+      metricName: dynamo_ttft_p95
+      query: |
+        histogram_quantile(0.95,
+          sum(rate(dynamo_frontend_time_to_first_token_seconds_bucket[2m]))
+          by (le)
+        )
+      threshold: "0.3"              # Scale up when TTFT p95 > 300ms (0.3 seconds)
+      activationThreshold: "0.3"    # Start scaling when TTFT > 300ms
