@@ -1,12 +1,16 @@
-# aks-dynamo-guide
+# Dynamo On AKS
 
 End-to-end tutorials for running [NVIDIA Dynamo](https://github.com/ai-dynamo/dynamo) on **Azure Kubernetes Service (AKS)**, integrated with **Azure Managed Prometheus** and **Grafana**, showcasing different inference serving architectures and autoscaling strategies for LLM workloads.
+
+
+![image-alt-text](autoscaling_agg_keda/img/vllm_dashboard.png)
+
 
 ---
 
 ## Overview
 
-| # | tutorial | Strategy | Status |
+| # | tutorial | Description | Status |
 |---|------|----------|--------|
 | 1 | [Autoscaling Aggregated Serving with KEDA](#1-autoscaling-aggregated-serving-with-keda) | Metric-driven HPA via KEDA + Prometheus TTFT | ✅ Complete |
 | 2 | [Autoscaling Disaggregated Serving with Dynamo Planner](#2-autoscaling-disaggregated-serving-with-dynamo-planner) | Disaggregated Prefill/Decode with Dynamo planner | 🚧 In Progress |
@@ -67,6 +71,8 @@ When **TTFT p95 > 300 ms**, KEDA scales up Decode Workers from **2 → 4** repli
 
 > See [autoscaling_agg_keda/dynamo-keda.ipynb](./autoscaling_agg_keda/dynamo-keda.ipynb) for the full step-by-step guide.
 
+
+
 ---
 
 ### 2. Autoscaling Disaggregated Serving with Dynamo Planner
@@ -90,6 +96,9 @@ Client → LoadBalancer :8000
 - Disaggregated Prefill/Decode for improved GPU memory efficiency
 - Dynamo Planner controls replica ratios based on live load signals
 - Integration with Azure Managed Prometheus for observability
+
+
+
 
 ---
 
